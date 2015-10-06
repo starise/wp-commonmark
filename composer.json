@@ -1,0 +1,14 @@
+{
+  "name": "starise/wp-commonmark",
+  "type": "wordpress-plugin",
+  "description": "Enable Commonmark: a strongly specified, highly compatible implementation of Markdown.",
+  "keywords": [
+    "wordpress",
+    "markdown"
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "composer/installers": "~1.0.12",
+    "league/commonmark": "^0.11.0"
+  }
+}
