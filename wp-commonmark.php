@@ -11,14 +11,6 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   require __DIR__ . '/vendor/autoload.php';
 }
 
-define('WP_POST_REVISIONS', false);
-
-function wcm_disable_autosave()
-{
-  wp_deregister_script('autosave');
-}
-add_action('admin_init', 'wcm_disable_autosave');
-
 use League\CommonMark\CommonMarkConverter;
 
 add_action('init', [WP_CommonMark::get_instance(), 'init']);
@@ -57,6 +49,8 @@ class WP_CommonMark
     add_filter('wp_insert_post', [$this, 'wp_insert_post']);
     add_filter('edit_post_content', [$this, 'edit_post_content'], 10, 2);
     add_filter('edit_post_content_filtered', [$this, 'edit_post_content_filtered'], 10, 2);
+    add_action('wp_restore_post_revision', [$this, 'wp_restore_post_revision'], 10, 2);
+    add_filter('_wp_post_revision_fields', [$this, '_wp_post_revision_fields']);
 
     // Admin panel
     add_action('post_submitbox_misc_actions', [$this, 'submitbox_actions']);
@@ -95,14 +89,20 @@ class WP_CommonMark
     $checked = ($nonce) ? isset($postarr['wcm_using_markdown']) : false;
 
     if ($nonce && $checked) {
-      $post_data['post_content_filtered'] = apply_filters('wcm_untransformed_content', $post_data['post_content']);
+      $post_data['post_content_filtered'] = $post_data['post_content'];
       $post_data['post_content'] = $this->transform($post_data['post_content']);
-      $post_data['post_content'] = apply_filters('content_save_pre', $post_data['post_content']);
-      $this->monitoring['post']['markdown'] = true;
+      $this->monitoring['post'][$post_id] = true;
     } elseif ($nonce && ! $checked) {
       // Check if it *was* a markdown post before
       if ($this->is_markdown($post_id) && ! empty($post_data['post_content_filtered'])) {
         $post_data['post_content_filtered'] = ''; // Remove old MD markup
+      }
+      $this->monitoring['post'][$post_id] = false;
+    } elseif (0 === strpos($post_data['post_name'], $post_data['post_parent'] . '-autosave')) {
+      // Autosaves are weird, we need to check markdown in post_parent
+      if($this->is_markdown($post_data['post_parent'])) {
+        $post_data['post_content_filtered'] = $post_data['post_content'];
+        $post_data['post_content'] = $this->transform($post_data['post_content']);
       }
     }
 
@@ -116,12 +116,25 @@ class WP_CommonMark
    */
   public function wp_insert_post($post_id)
   {
-    if (isset($this->monitoring['post']['markdown'])) {
+    if (isset($this->monitoring['post'][$post_id])) {
+      if($this->monitoring['post'][$post_id] === true) {
+        $this->set_as_markdown($post_id);
+      } else {
+        $this->set_not_markdown($post_id);
+      }
+      unset($this->monitoring['post'][$post_id]);
+    }
+  }
+
+  public function wp_restore_post_revision($post_id, $revision_id)
+  {
+    $revision = get_post($revision_id, ARRAY_A);
+
+    if(! empty($revision['post_content_filtered'])) {
       $this->set_as_markdown($post_id);
     } else {
       $this->set_not_markdown($post_id);
     }
-    unset($this->monitoring['post']['markdown']);
   }
 
   /**
@@ -360,6 +373,12 @@ class WP_CommonMark
     if ($this->is_markdown($_GET['post'])) {
       add_filter('user_can_richedit', '__return_false', 99);
     }
+  }
+
+  public function _wp_post_revision_fields($fields)
+  {
+    $fields['post_content_filtered'] = 'Markdown';
+    return $fields;
   }
 
   /**
