@@ -8,6 +8,8 @@ You can write contents in Markdown using CommonMark [latest spec](http://spec.co
 
 You can manage the type of syntax used in your contents, simply by activating or de-activating the switch placed on the "Publish" metabox.
 
+![WP CommonMark metabox](screenshot-1.png)
+
 ## Requirements
 
 * PHP >= 5.4.0
