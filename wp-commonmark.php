@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP CommonMark
  * Description: Enable Commonmark: a strongly specified, highly compatible implementation of Markdown.
- * Version:     0.1.0
+ * Version:     0.2.0
  * Author:      Andrea Brandi
  * Author URI:  http://andreabrandi.com
  */
