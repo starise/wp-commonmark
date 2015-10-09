@@ -1,3 +1,5 @@
+- Use PSR-4 specification
+
 ### 0.2.0: October 8, 2015
 - Add support for revisions and autosaves
 
