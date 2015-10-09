@@ -1,9 +1,9 @@
 (function($) {
   var app;
-  app = window.markdownOnSaveApp = {
+  app = window.wpCommonMark = {
     on: function() {
       var a, i, len, ref, results;
-      $('body').addClass('wcm-markdown');
+      $('body').addClass('wpcm-markdown');
       this.html.click();
       this.checkbox.attr('checked', true);
       this.buttonOn.show();
@@ -17,7 +17,7 @@
     },
     off: function() {
       var a, i, len, ref, results;
-      $('body').removeClass('wcm-markdown');
+      $('body').removeClass('wpcm-markdown');
       this.checkbox.attr('checked', false);
       this.buttonOn.hide();
       ref = [this.buttonOff, this.html, this.visual, this.htmlButtons];
@@ -33,11 +33,11 @@
     },
     start: function() {
       var a, context;
-      context = $('#wcm-markdown');
+      context = $('#wpcm-markdown');
       context.detach().insertBefore('#submitdiv h3 span').show();
       this.buttonOn = $('img.markdown-on', context);
       this.buttonOff = $('img.markdown-off', context);
-      this.checkbox = $('#wcm_using_markdown');
+      this.checkbox = $('#wpcm_using_markdown');
       this.html = $('#content-html');
       this.visual = $('#content-tmce');
       this.htmlButtonsString = ((function() {

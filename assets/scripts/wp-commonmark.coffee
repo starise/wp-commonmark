@@ -1,23 +1,23 @@
 do ($ = jQuery) ->
-  app = window.markdownOnSaveApp =
+  app = window.wpCommonMark =
     on: ->
-      $('body').addClass 'wcm-markdown'
+      $('body').addClass 'wpcm-markdown'
       @html.click()
       @checkbox.attr 'checked', yes
       @buttonOn.show()
       a.hide() for a in [ @buttonOff, @html, @visual, @htmlButtons ]
     off: ->
-      $('body').removeClass 'wcm-markdown'
+      $('body').removeClass 'wpcm-markdown'
       @checkbox.attr 'checked', no
       @buttonOn.hide()
       a.show() for a in [ @buttonOff, @html, @visual, @htmlButtons ]
     delay: (ms, f) -> setTimeout f, ms
     start: ->
-      context    = $ '#wcm-markdown'
+      context    = $ '#wpcm-markdown'
       context.detach().insertBefore('#submitdiv h3 span').show()
       @buttonOn  = $ 'img.markdown-on',  context
       @buttonOff = $ 'img.markdown-off', context
-      @checkbox  = $ '#wcm_using_markdown'
+      @checkbox  = $ '#wpcm_using_markdown'
       @html      = $ '#content-html'
       @visual    = $ '#content-tmce'
       @htmlButtonsString = ('#qt_content_' + a for a in [

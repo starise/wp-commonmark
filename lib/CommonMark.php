@@ -74,8 +74,8 @@ class CommonMark
     // Note: $post_data array is slashed!
     $post_id = isset($postarr['ID']) ? $postarr['ID'] : false;
     $parent_id = isset($postarr['post_parent']) ? $postarr['post_parent'] : false;
-    $nonce = isset($postarr['_wcm_markdown_nonce']) && wp_verify_nonce($postarr['_wcm_markdown_nonce'], 'wcm-markdown-save');
-    $checked = ($nonce) ? isset($postarr['wcm_using_markdown']) : false;
+    $nonce = isset($postarr['_wpcm_markdown_nonce']) && wp_verify_nonce($postarr['_wpcm_markdown_nonce'], 'wpcm-markdown-save');
+    $checked = ($nonce) ? isset($postarr['wpcm_using_markdown']) : false;
 
     if ($nonce && $checked) {
       $post_data['post_content_filtered'] = $post_data['post_content'];
@@ -301,7 +301,7 @@ class CommonMark
       $text = wp_unslash($text);
     }
 
-    $text = apply_filters('wcm_markdown_transform_pre', $text, $args);
+    $text = apply_filters('wpcm_markdown_transform_pre', $text, $args);
 
     // Ensure our paragraphs are separated
     $text = str_replace(['</p><p>', "</p>\n<p>"], "</p>\n\n<p>", $text);
@@ -318,7 +318,7 @@ class CommonMark
     // Markdown inserts extra spaces to make itself work.
     $text = rtrim($text);
 
-    $text = apply_filters('wcm_markdown_transform_post', $text, $args);
+    $text = apply_filters('wpcm_markdown_transform_post', $text, $args);
 
     // Probably need to re-slash
     if ($args['unslash']) {
@@ -333,19 +333,19 @@ class CommonMark
     $markdown = isset($GLOBALS['post']) && isset($GLOBALS['post']->ID) && $this->is_markdown($GLOBALS['post']->ID);
     printf(
       '<style>
-        #submitdiv h3 > span { margin-left: 38px; } #wcm-markdown { position: absolute; top: 5px; left: 10px; }
-        #wcm-markdown img { vertical-align: bottom; margin-right: 10px; }
-        #wcm-markdown a:active { outline: 0 !important }
+        #submitdiv h3 > span { margin-left: 38px; } #wpcm-markdown { position: absolute; top: 5px; left: 10px; }
+        #wpcm-markdown img { vertical-align: bottom; margin-right: 10px; }
+        #wpcm-markdown a:active { outline: 0 !important }
       </style>
-      <wrap id="wcm-markdown" style="display: none">
+      <wrap id="wpcm-markdown" style="display: none">
         <a href="#" onclick="return false;"><img %1$s class="markdown-status markdown-on" src="%2$s/assets/images/208x128-solid.png" width="32" height="20" />
         <img %1$s class="markdown-status markdown-off" src="%2$s/assets/images/208x128.png" width="32" height="20" /></a>
       </wrap>
-      <input style="display: none" type="checkbox" name="wcm_using_markdown" id="wcm_using_markdown" value="1" %3$s />',
+      <input style="display: none" type="checkbox" name="wpcm_using_markdown" id="wpcm_using_markdown" value="1" %3$s />',
       ! $markdown ? 'style="display:none" ' : '',
       WPCM_DIR_URL,
       checked($this->is_markdown($GLOBALS['post']->ID), true, false));
-    wp_nonce_field('wcm-markdown-save', '_wcm_markdown_nonce', false, true);
+    wp_nonce_field('wpcm-markdown-save', '_wpcm_markdown_nonce', false, true);
   }
 
   public function enqueue_scripts()
