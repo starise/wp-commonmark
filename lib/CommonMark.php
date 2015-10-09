@@ -343,14 +343,14 @@ class CommonMark
       </wrap>
       <input style="display: none" type="checkbox" name="wcm_using_markdown" id="wcm_using_markdown" value="1" %3$s />',
       ! $markdown ? 'style="display:none" ' : '',
-      plugin_dir_url(__FILE__),
+      WPCM_DIR_URL,
       checked($this->is_markdown($GLOBALS['post']->ID), true, false));
     wp_nonce_field('wcm-markdown-save', '_wcm_markdown_nonce', false, true);
   }
 
   public function enqueue_scripts()
   {
-    wp_enqueue_script('wp-commonmark', plugin_dir_url(__FILE__) . '/assets/scripts/wp-commonmark.js', ['jquery']);
+    wp_enqueue_script('wp-commonmark', WPCM_DIR_URL . '/assets/scripts/wp-commonmark.js', ['jquery']);
   }
 
   public function load_post()

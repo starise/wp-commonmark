@@ -13,4 +13,6 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   require __DIR__ . '/vendor/autoload.php';
 }
 
+define(__NAMESPACE__ . '\WPCM_DIR_URL', plugins_url('', __FILE__));
+
 add_action('init', [CommonMark::get_instance(), 'init']);
