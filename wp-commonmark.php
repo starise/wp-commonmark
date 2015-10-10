@@ -17,4 +17,5 @@ define(__NAMESPACE__ . '\WPCM_VERSION', '0.3.0');
 define(__NAMESPACE__ . '\WPCM_DIR_URL', plugins_url('', __FILE__));
 define(__NAMESPACE__ . '\WPCM_DIR_PATH', plugin_basename(__FILE__));
 
-add_action('init', [CommonMark::get_instance(), 'init']);
+add_action('init', [CommonMark_Posts::get_instance(), 'init']);
+add_action('init', [CommonMark_XmlRpc::get_instance(), 'init']);
