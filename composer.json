@@ -4,8 +4,10 @@
   "description": "Enable CommonMark: a strongly specified, highly compatible implementation of Markdown, in WordPress.",
   "keywords": [
     "wordpress",
+    "plugin",
     "markdown",
-    "commonmark"
+    "commonmark",
+    "formatting"
   ],
   "autoload": {
     "psr-4": {
