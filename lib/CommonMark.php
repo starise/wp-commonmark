@@ -74,13 +74,19 @@ class CommonMark
     return defined('DOING_AUTOSAVE') && DOING_AUTOSAVE;
   }
 
+  protected function verify_nonce()
+  {
+    $nonce = filter_has_var(INPUT_POST, '_wpcm_nonce') ? filter_input(INPUT_POST, '_wpcm_nonce') : false;
+    return $nonce && wp_verify_nonce($nonce, 'wpcm-markdown-save');
+  }
+
   public function wp_insert_post_data($post_data, $postarr)
   {
     // Note: $post_data array is slashed!
     $post_id = isset($postarr['ID']) ? $postarr['ID'] : false;
     $parent_id = isset($postarr['post_parent']) ? $postarr['post_parent'] : false;
-    $nonce = isset($postarr['_wpcm_markdown_nonce']) && wp_verify_nonce($postarr['_wpcm_markdown_nonce'], 'wpcm-markdown-save');
-    $checked = ($nonce) ? isset($postarr['wpcm_using_markdown']) : false;
+    $nonce = isset($postarr['_wpcm_nonce']) && $this->verify_nonce();
+    $checked = $nonce ? isset($postarr['wpcm_using_markdown']) : false;
 
     if ($nonce && $checked) {
       $post_data['post_content_filtered'] = $post_data['post_content'];
@@ -350,7 +356,7 @@ class CommonMark
       ! $markdown ? 'style="display:none" ' : '',
       WPCM_DIR_URL,
       checked($this->is_markdown($GLOBALS['post']->ID), true, false));
-    wp_nonce_field('wpcm-markdown-save', '_wpcm_markdown_nonce', false, true);
+    wp_nonce_field('wpcm-markdown-save', '_wpcm_nonce', false, true);
   }
 
   public function enqueue_scripts()
