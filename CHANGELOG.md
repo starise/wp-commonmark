@@ -1,4 +1,6 @@
+### 0.3.0: October 10, 2015
 - Use PSR-4 specification
+- Added better icons
 
 ### 0.2.0: October 8, 2015
 - Add support for revisions and autosaves
