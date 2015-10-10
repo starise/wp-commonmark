@@ -69,6 +69,11 @@ class CommonMark
     return delete_metadata('post', $post_id, self::IS_MARKDOWN);
   }
 
+  protected function is_autosave()
+  {
+    return defined('DOING_AUTOSAVE') && DOING_AUTOSAVE;
+  }
+
   public function wp_insert_post_data($post_data, $postarr)
   {
     // Note: $post_data array is slashed!
@@ -87,8 +92,8 @@ class CommonMark
         $post_data['post_content_filtered'] = ''; // Remove old MD markup
       }
       $this->monitoring['post'][$post_id] = false;
-    } elseif (0 === strpos($post_data['post_name'], $post_data['post_parent'] . '-autosave')) {
-      // Autosaves are weird, we need to check markdown in post_parent
+    } elseif ($this->is_autosave()) {
+      // Autosaves are weird, check markdown flag in post_parent
       if($this->is_markdown($post_data['post_parent'])) {
         $post_data['post_content_filtered'] = $post_data['post_content'];
         $post_data['post_content'] = $this->transform($post_data['post_content']);
