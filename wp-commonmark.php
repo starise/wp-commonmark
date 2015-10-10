@@ -15,5 +15,6 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 
 define(__NAMESPACE__ . '\WPCM_VERSION', '0.2.0');
 define(__NAMESPACE__ . '\WPCM_DIR_URL', plugins_url('', __FILE__));
+define(__NAMESPACE__ . '\WPCM_DIR_PATH', plugin_basename(__FILE__));
 
 add_action('init', [CommonMark::get_instance(), 'init']);

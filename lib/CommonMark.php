@@ -10,6 +10,8 @@ class CommonMark
 
   const IS_MARKDOWN = '_is_markdown';
 
+  const NONCE_NAME = '_wpcm_nonce';
+
   public $posts_to_uncache = [];
 
   private $monitoring = ['post' => []];
@@ -76,8 +78,8 @@ class CommonMark
 
   protected function verify_nonce()
   {
-    $nonce = filter_has_var(INPUT_POST, '_wpcm_nonce') ? filter_input(INPUT_POST, '_wpcm_nonce') : false;
-    return $nonce && wp_verify_nonce($nonce, 'wpcm-markdown-save');
+    $nonce = filter_has_var(INPUT_POST, self::NONCE_NAME) ? filter_input(INPUT_POST, self::NONCE_NAME) : false;
+    return $nonce && wp_verify_nonce($nonce, WPCM_DIR_PATH);
   }
 
   public function wp_insert_post_data($post_data, $postarr)
@@ -85,7 +87,7 @@ class CommonMark
     // Note: $post_data array is slashed!
     $post_id = isset($postarr['ID']) ? $postarr['ID'] : false;
     $parent_id = isset($postarr['post_parent']) ? $postarr['post_parent'] : false;
-    $nonce = isset($postarr['_wpcm_nonce']) && $this->verify_nonce();
+    $nonce = isset($postarr[self::NONCE_NAME]) && $this->verify_nonce();
     $checked = $nonce ? isset($postarr['wpcm_using_markdown']) : false;
 
     if ($nonce && $checked) {
@@ -356,7 +358,7 @@ class CommonMark
       ! $markdown ? 'style="display:none" ' : '',
       WPCM_DIR_URL,
       checked($this->is_markdown($GLOBALS['post']->ID), true, false));
-    wp_nonce_field('wpcm-markdown-save', '_wpcm_nonce', false, true);
+    wp_nonce_field(WPCM_DIR_PATH, self::NONCE_NAME, false, true);
   }
 
   public function enqueue_scripts()
